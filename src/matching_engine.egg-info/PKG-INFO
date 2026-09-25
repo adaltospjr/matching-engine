@@ -1,0 +1,10 @@
+Metadata-Version: 2.4
+Name: matching-engine
+Version: 0.1.0
+Summary: Order matching engine (order book + price-time priority) – core of the Matchbook project
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Provides-Extra: dev
+Requires-Dist: pytest>=8.0; extra == "dev"
+Requires-Dist: pytest-cov>=5.0; extra == "dev"
+Requires-Dist: ruff>=0.6; extra == "dev"
