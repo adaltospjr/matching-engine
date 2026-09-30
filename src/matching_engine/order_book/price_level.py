@@ -1,17 +1,9 @@
-"""A price level: all resting orders at one specific price, FIFO."""
-
 from collections import OrderedDict
 
 from matching_engine.order_book.order import Order
 
 
 class PriceLevel:
-    """Orders resting at a single price, ordered by arrival (time priority).
-
-    Internally backed by an OrderedDict keyed by order_id: O(1) insertion,
-    O(1) cancellation of any order regardless of position, and O(1) access
-    to the oldest order (the next one eligible to match).
-    """
 
     def __init__(self, price: int) -> None:
         self.price = price
@@ -42,13 +34,14 @@ class PriceLevel:
             return None
         return next(iter(self._orders.values()))
 
-    def apply_fill(self, order_id: str, quantity: int) -> None:
+    def apply_fill(self, order_id: str, quantity: int) -> Order:
         """Reduce an order's remaining quantity; drop it if fully filled."""
         order = self._orders[order_id]
         order.fill(quantity)
         self.total_quantity -= quantity
         if order.is_filled:
             del self._orders[order_id]
+        return order
 
     @property
     def is_empty(self) -> bool:

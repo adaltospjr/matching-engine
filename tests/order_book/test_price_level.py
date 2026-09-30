@@ -1,4 +1,3 @@
-
 import pytest
 
 from matching_engine.order_book.order import Order, OrderType, Side
