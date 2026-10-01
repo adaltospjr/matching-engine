@@ -51,6 +51,13 @@ class BookSide:
             heapq.heappop(self._price_heap)
         return None
 
+    def iter_levels_best_first(self):
+        prices = sorted(self._levels.keys(), key=lambda p: self._sign * p)
+        for price in prices:
+            level = self._levels[price]
+            if not level.is_empty:
+                yield level
+
     @property
     def best_price(self) -> int | None:
         level = self.best_level()

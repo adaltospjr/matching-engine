@@ -94,3 +94,14 @@ def test_cancel_missing_order_raises():
     side = BookSide(Side.BUY)
     with pytest.raises(KeyError):
         side.cancel_order("does-not-exist")
+
+def test_iter_levels_best_first_orders_by_price_without_mutating_heap():
+    side = BookSide(Side.BUY)
+    side.add_order(make_order("o1", Side.BUY, price=3200))
+    side.add_order(make_order("o2", Side.BUY, price=3250))
+    side.add_order(make_order("o3", Side.BUY, price=3100))
+
+    prices = [level.price for level in side.iter_levels_best_first()]
+
+    assert prices == [3250, 3200, 3100]
+    assert side.best_price == 3250  # heap still intact afterward
