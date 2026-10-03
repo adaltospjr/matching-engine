@@ -1,5 +1,3 @@
-"""The order book for a single instrument: bid side + ask side + matching."""
-
 import itertools
 
 from matching_engine.order_book.book_side import BookSide

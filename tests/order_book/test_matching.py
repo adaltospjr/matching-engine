@@ -29,6 +29,20 @@ def test_non_crossing_limit_order_rests_in_book():
     assert trades == []
     assert book.best_bid == 3200
 
+def test_crossing_limit_order_produces_a_trade_2():
+    book = OrderBook(instrument="PETR4")
+
+    book.submit(make_order("sell2", Side.BUY, quantity=100, price=3250))
+    trades = book.submit(make_order("buy2", Side.SELL, quantity=100, price=3250))
+
+    assert len(trades) == 1
+    trade = trades[0]
+    assert trade.buy_order_id == "buy2"
+    assert trade.sell_order_id == "sell2"
+    assert trade.quantity == 100
+    assert trade.price == 3250
+    assert book.best_bid is None
+    assert book.best_ask is None
 
 def test_crossing_limit_order_produces_a_trade():
     book = OrderBook(instrument="PETR4")
