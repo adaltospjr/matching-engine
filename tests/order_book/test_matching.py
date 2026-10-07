@@ -190,3 +190,16 @@ def test_fork_order_with_non_crossing_price_produces_no_trades():
     assert trades == []
     assert book.best_ask == 3300
     assert book.best_bid is None
+
+def test_market_buy_crosses_resting_sell_regardless_of_price():
+    book = OrderBook(instrument="PETR4")
+    book.submit(make_order("s1", Side.SELL, quantity=10, price=105))
+
+    trades = book.submit(
+        make_order("b1", Side.BUY, quantity=10,
+                   order_type=OrderType.MARKET, time_in_force=TimeInForce.IOC)
+    )
+
+    assert len(trades) == 1
+    assert trades[0].price == 105
+    assert trades[0].quantity == 10
