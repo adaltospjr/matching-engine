@@ -168,3 +168,25 @@ def test_market_order_with_no_liquidity_produces_no_trades():
     )
 
     assert trades == []
+
+def test_non_crossing_limit_order_rests_when_opposite_side_has_orders():
+    book = OrderBook(instrument="PETR4")
+    book.submit(make_order("sell1", Side.SELL, quantity=1000, price=3250))
+
+    trades = book.submit(make_order("buy1", Side.BUY, quantity=100, price=3200))
+
+    assert trades == []
+    assert book.best_bid == 3200
+    assert book.best_ask == 3250
+
+def test_fork_order_with_non_crossing_price_produces_no_trades():
+    book = OrderBook(instrument="PETR4")
+    book.submit(make_order("sell1", Side.SELL, quantity=100, price=3300))
+
+    trades = book.submit(
+        make_order("buy1", Side.BUY, quantity=50, price=3250, time_in_force=TimeInForce.FOK)
+    )
+
+    assert trades == []
+    assert book.best_ask == 3300
+    assert book.best_bid is None
