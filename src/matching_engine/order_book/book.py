@@ -73,7 +73,7 @@ class OrderBook:
             level = opposite.best_level()
             if level is None:
                 break
-            if order.order_type is OrderType.LIMIT and not self._crosses(order, level.price):
+            if not self._crosses(order, level.price):
                 break
 
             resting_order = level.peek()
@@ -110,7 +110,7 @@ class OrderBook:
     def _can_fully_fill(self, order: Order, opposite: BookSide) -> bool:
         remaining = order.quantity
         for level in opposite.iter_levels_best_first():
-            if order.order_type is OrderType.LIMIT and not self._crosses(order, level.price):
+            if not self._crosses(order, level.price):
                 break
             remaining -= level.total_quantity
             if remaining <= 0:

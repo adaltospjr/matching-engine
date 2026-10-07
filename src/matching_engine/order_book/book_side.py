@@ -42,7 +42,6 @@ class BookSide:
         return order
 
     def best_level(self) -> PriceLevel | None:
-        """Return the level at the best price, skipping stale heap entries."""
         while self._price_heap:
             candidate_price = self._sign * self._price_heap[0]
             level = self._levels.get(candidate_price)
