@@ -1,7 +1,7 @@
 import pytest
 
 from matching_engine.order_book.book import OrderBook
-from matching_engine.order_book.order import Order, OrderType, Side
+from matching_engine.order_book.order import Order, OrderType, Side, TimeInForce
 
 
 def make_order(order_id: str, side: Side, price: int, quantity: int = 100) -> Order:
@@ -74,3 +74,17 @@ def test_apply_fill_fully_removes_order_from_index():
 
     with pytest.raises(KeyError):
         book.cancel_order("buy1")  # already gone, nothing left to cancel
+
+def test_has_order_reports_only_resting_orders():
+    book = OrderBook(instrument="PETR4")
+    book.add_order(Order(
+        order_id="buy1", client_order_id="c-buy1",
+        side=Side.BUY, order_type=OrderType.LIMIT,
+        quantity=100, price=3200, time_in_force=TimeInForce.GTC,
+    ))
+
+    assert book.has_order("buy1") is True
+    assert book.has_order("nao-existe") is False
+
+    book.cancel_order("buy1")
+    assert book.has_order("buy1") is False

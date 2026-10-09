@@ -31,6 +31,9 @@ class OrderBook:
         side = self._order_sides.pop(order_id)
         return self._side_for(side).cancel_order(order_id)
 
+    def has_order(self, order_id: str) -> bool:
+        return order_id in self._order_sides
+
     def apply_fill(self, order_id: str, quantity: int) -> Order:
         side = self._order_sides[order_id]
         order = self._side_for(side).apply_fill(order_id, quantity)
